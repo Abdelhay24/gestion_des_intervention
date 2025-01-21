@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %} Intervenant {% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="p-3 bg-light border rounded-3">
+                <h2>Manage <b>Intervenants</b>
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add Intervenant</button>
+                </h2>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="container mt-4">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="color: #ff6347; font-size: 1.2rem;">
+                        <span aria-hidden="true">&times;</span> <!-- The "X" symbol -->
+                    </button>
+                    <strong>{{ message }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Post</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in intervenants %}
+                            <tr>
+                                <td>{{ row.id_IN }}</td>
+                                <td>{{ row.Nom }}</td>
+                                <td>{{ row.PreNom }}</td>
+                                <td>{{ row.Post }}</td>
+                                <td>
+                                    <!-- Edit Button -->
+                                    <a href="/updateIN/{{row.id_IN}}" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modaledit{{ row.id_IN }}">Edit</a>
+                                    <a href="/DeleteIN/{{row.id_IN}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure')">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Client Modal -->
+            <div class="modal fade" id="mymodal" tabindex="-1" aria-labelledby="mymodalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mymodalLabel">Add New Intervenat</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{'insertIN'}}" method="POST">
+    <div class="mb-3">
+        <label for="Nom" class="form-label">Nom</label>
+        <input type="text" class="form-control" id="Nom" name="nom" required>
+    </div>
+    <div class="mb-3">
+        <label for="Prenom" class="form-label">Prenom</label>
+        <input type="text" class="form-control" id="Prenom" name="prenom" required>
+    </div>
+    <div class="mb-3">
+        <label for="Direction" class="form-label">Post</label>
+        <input type="text" class="form-control" id="Direction" name="Post" required>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit IN Modal -->
+            {% for row in intervenants %}
+                <div class="modal fade" id="modaledit{{ row.id_IN }}" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="/updateIN/{{ row.id_IN }}" method="POST">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modalLabel{{ row.id_IN }}">Edit Intervenant</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Hidden field for Client ID -->
+                                    <input type="hidden" name="id_IN" value="{{ row.id_IN }}">
+
+                                    <div class="mb-3">
+                                        <label for="editINNom" class="form-label">Nom</label>
+                                        <input id="editINNom" type="text" class="form-control" name="nom" required value="{{ row.Nom }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editINPrenom" class="form-label">Prenom</label>
+                                        <input id="editINPrenom" type="text" class="form-control" name="prenom" required value="{{ row.PreNom }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="post" class="form-label">Post</label>
+                                        <input id="post" type="text" class="form-control" name="Post" required value="{{ row.Post }}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %} Client {% endblock %}
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center">Inscription</h1>
+        <div class="col-md-6 mx-auto mt-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="post" action="{{ url_for('inscription') }}">
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom</label>
+                    <input type="text" class="form-control" id="nom" name="nom" required>
+                </div>
+                <div class="mb-3">
+                    <label for="mot_de_passe" class="form-label">Mot de passe</label>
+                    <input type="password" class="form-control" id="mot_de_passe" name="mot_de_passe" required>
+                </div>
+                <button type="submit" class="btn btn-primary">S'inscrire</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

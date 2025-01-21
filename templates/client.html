@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %} Client {% endblock %}
+
+{% block body %}
+    <div class="row">
+        <div class="col-md-12">
+
+<div class="container mt-5">
+            <div class="p-3 bg-light border rounded-3">
+                <h2>Manage <b>Clients</b>
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal" data-bs-target="#mymodal">Add Client</button>
+                </h2>
+
+{% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        <div class="container mt-4">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" style="color: #ff6347; font-size: 1.2rem;">
+                        <span aria-hidden="true">&times;</span> <!-- The "X" symbol -->
+                    </button>
+                    <strong>{{ message }}</strong>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+
+
+                <table class="table table-hover table-dark">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th>Direction</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in clients %}
+                            <tr>
+                                <td>{{ row.id_Client }}</td>
+                                <td>{{ row.Nom }}</td>
+                                <td>{{ row.PreNom }}</td>
+                                <td>{{ row.Direction }}</td>
+                                <td>
+                                    <!-- Edit Button -->
+                                    <a href="/updateclient/{{row.id_Client}}" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modaledit{{ row.id_Client }}">Edit</a>
+                                    <a href="/Deleteclient/{{row.id_Client}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure')">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Client Modal -->
+            <div class="modal fade" id="mymodal" tabindex="-1" aria-labelledby="mymodalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mymodalLabel">Add New Client</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{'insertclient'}}" method="POST">
+    <div class="mb-3">
+        <label for="clientNom" class="form-label">Nom</label>
+        <input type="text" class="form-control" id="clientNom" name="nom" required>
+    </div>
+    <div class="mb-3">
+        <label for="clientPrenom" class="form-label">Prenom</label>
+        <input type="text" class="form-control" id="clientPrenom" name="prenom" required>
+    </div>
+    <div class="mb-3">
+        <label for="clientDirection" class="form-label">Direction</label>
+        <input type="text" class="form-control" id="clientDirection" name="direction" required>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    </div>
+</form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Client Modal -->
+            {% for row in clients %}
+                <div class="modal fade" id="modaledit{{ row.id_Client }}" tabindex="-1" aria-labelledby="modaleditLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form action="/updateclient/{{row.id_Client}}" method="POST">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="modaleditLabel">Edit Client</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Hidden field for Client ID -->
+                                    <input type="hidden" name="idClient" value="{{ row.id_Client }}">
+
+                                    <div class="mb-3">
+                                        <label for="editClientNom" class="form-label">Nom</label>
+                                        <input id="editClientNom" type="text" class="form-control" name="nom" required value="{{ row.Nom }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editClientPrenom" class="form-label">Prenom</label>
+                                        <input id="editClientPrenom" type="text" class="form-control" name="prenom" required value="{{ row.PreNom }}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="editClientDirection" class="form-label">Direction</label>
+                                        <input id="editClientDirection" type="text" class="form-control" name="direction" required value="{{ row.Direction }}">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

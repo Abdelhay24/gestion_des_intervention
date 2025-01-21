@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% include 'header.html' %}
+{% block title %} Intervenant {% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="p-3 bg-light border rounded-3">
+                <h2>Manage <b>Intervantion</b>
+                    <button type="button" class="btn btn-success float-end" data-bs-toggle="modal"
+                            data-bs-target="#mymodal">Add Intervantion
+                    </button>
+                </h2>
+
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                {% if messages %}
+                <div class="container mt-4">
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                                style="color: #ff6347; font-size: 1.2rem;">
+                            <span aria-hidden="true">&times;</span> <!-- The "X" symbol -->
+                        </button>
+                        <strong>{{ message }}</strong>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+
+                <table class="table table-hover table-dark">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>motif</th>
+                        <th>ID_Client</th>
+                        <th>ID_IN</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in intervantion %}
+                    <tr>
+                        <td>{{ row.id_INS }}</td>
+                        <td>{{ row.date }}</td>
+                        <td>{{ row.type }}</td>
+                        <td>{{ row.motif }}</td>
+                        <td>{{ row.ID_Client }}</td>
+                        <td>{{ row.ID_IN }}</td>
+                        <td>
+                            <!-- Edit Button -->
+                            <a href="/updateINS/{{row.id_INS}}" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                               data-bs-target="#modaledit{{ row.id_INS }}">Edit</a>
+                            <a href="/DeleteINS/{{row.id_INS}}" class="btn btn-danger btn-sm"
+                               onclick="return confirm('Are you sure')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Add Intevention Modal -->
+            <div class="modal fade" id="mymodal" tabindex="-1" aria-labelledby="mymodalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="mymodalLabel">Add New Intervantion </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{'insertINS'}}" method="POST">
+                                <div class="mb-3">
+                                    <label for="insertdate" class="form-label">date</label>
+                                    <input id="insertdate" type="text" class="form-control" name="date" required
+                                           value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="instype" class="form-label">Type</label>
+                                    <input id="instype" type="text" class="form-control" name="type" required
+                                           value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="insmotif" class="form-label">Motif</label>
+                                    <input id="insmotif" type="text" class="form-control" name="motif" required
+                                           value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="insID_C" class="form-label">ID_Client</label>
+                                   - <input id="insID_C" type="text" class="form-control" name="ID_C" required
+                                           value="">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="insID_IN" class="form-label">ID_IN</label>
+                                    <input id="insID_IN" type="text" class="form-control" name="ID_IN" required
+                                           value="">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit IN Modal -->
+            {% for row in intervantion %}
+            <div class="modal fade" id="modaledit{{ row.id_INS }}" tabindex="-1" aria-labelledby="modalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form action="/updateINS/{{ row.id_INS }}" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalLabel{{ row.id_INS }}">Edit Intervantion</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <!-- Hidden field for Client ID -->
+                                <input type="hidden" name="id_IN" value="{{ row.id_INS }}">
+
+                                <div class="mb-3">
+                                    <label for="date" class="form-label">date</label>
+                                    <input id="date" type="text" class="form-control" name="date" required
+                                           value="{{ row.date }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="type" class="form-label">Type</label>
+                                    <input id="type" type="text" class="form-control" name="type" required
+                                           value="{{ row.type }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="motif" class="form-label">Motif</label>
+                                    <input id="motif" type="text" class="form-control" name="motif" required
+                                           value="{{ row.motif }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ID_C" class="form-label">ID_Client</label>
+                                   - <input id="ID_C" type="text" class="form-control" name="ID_C" required
+                                           value="{{ row.ID_Client }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ID_IN" class="form-label">ID_IN</label>
+                                    <input id="ID_IN" type="text" class="form-control" name="ID_IN" required
+                                           value="{{ row.ID_IN }}">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
